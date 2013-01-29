@@ -1,7 +1,6 @@
 import ctypes
 
-
-_libgrok = ctypes.cdll.LoadLibrary('libgrok.so')
+_libgrok = ctypes.cdll.LoadLibrary('libgrok.dylib')
 
 _grok_new = _libgrok.grok_new
 _grok_new.argtypes = []
@@ -29,22 +28,3 @@ _grok_patterns_import_from_file.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 _grok_patterns_import_from_file.restype = ctypes.c_int
 
 
-class Grok(object):
-
-    def __init__(self):
-        self._grok = _grok_new()
-
-    def __del__(self):
-        _grok_free(self._grok)
-
-    def add_pattern(self, name, pattern):
-        _grok_pattern_add(self._grok, name, len(name), pattern, len(pattern))
-
-    def add_patterns_from_file(self, filename):
-        _grok_patterns_import_from_file(self._grok, filename)
-
-    def compile(self, pattern):
-        _grok_compile(self._grok, pattern)
-
-    def __call__(self, text):
-        return _grok_exec(self._grok, text, None)
