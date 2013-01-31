@@ -2,3 +2,10 @@ Python wrapper for semicomplete's Grok library.
 
 Grok allows you to easily parse logs and other files and turns the unstructured
 log and event data into structured data.
+
+* Getting Going
+
+brew install pcre
+brew install grok
+
+python test/testlibgrok.py
