@@ -1,6 +1,8 @@
 import ctypes as CTYPES
 from _libgrok import *
 
+_fixed_buffer_size = 4096
+
 class GrokError(Exception):
     def __init__(self, message=None, err=0):
         if message:
@@ -53,10 +55,10 @@ class GrokMatch(object):
 
     def walk(self):
         _libgrok._grok_match_walk_init(self._grok_match)
-        name = CTYPES.create_string_buffer('\00' * 100)
+        name = CTYPES.create_string_buffer( _fixed_buffer_size)
         name_ptr = CTYPES.c_char_p(CTYPES.addressof(name))
         name_len = CTYPES.c_int(0)
-        data = CTYPES.create_string_buffer('\00' * 255)
+        data = CTYPES.create_string_buffer( _fixed_buffer_size)
         data_ptr = CTYPES.c_char_p(CTYPES.addressof(data))
         data_len = CTYPES.c_int(0)
         while _libgrok._grok_match_walk_next(self._grok_match,
@@ -68,7 +70,7 @@ class GrokMatch(object):
         _libgrok._grok_match_walk_end(self._grok_match)
 
     def __getitem__(self, k):
-        substring = CTYPES.create_string_buffer('\00' * 100)
+        substring = CTYPES.create_string_buffer( _fixed_buffer_size)
         substring_ptr  = CTYPES.c_char_p(CTYPES.addressof(substring))
         substring_len = CTYPES.c_int(0)
         ret = _libgrok._grok_match_get_named_substring(self._grok_match, k, CTYPES.byref(substring_ptr), CTYPES.byref(substring_len))
